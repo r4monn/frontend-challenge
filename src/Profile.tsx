@@ -35,7 +35,7 @@ function Profile() {
         // Se o token for inválido, faz logout
         if (error.response?.status === 403) {
           authService.logout();
-          toast.error(error.response?.detail);
+          toast(error.response?.detail);
         }
       }
     };

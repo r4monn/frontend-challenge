@@ -23,6 +23,10 @@ export interface LoginResponse {
 export const authService = {
   async login(loginData: LoginData): Promise<LoginResponse> {
     const response = await api.post('/auth/login/', loginData);
+
+    localStorage.setItem('access_token', response.data.tokens.access);
+    localStorage.setItem('refresh_token', response.data.tokens.refresh);
+
     return response.data;
   },
 

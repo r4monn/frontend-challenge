@@ -12,7 +12,6 @@ import {
 import { Toaster } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import B2BLogo from "@/assets/B2BitLogo.png";
 
 import {
   BrowserRouter as Router,
@@ -33,7 +32,9 @@ const formSchema = z.object({
   password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
 });
 
-function LoginForm() {
+const B2BLogo = "/B2BitLogo.png";
+
+export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
