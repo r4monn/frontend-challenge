@@ -11,13 +11,17 @@ import { authService } from "@/services/authService";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function Profile() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userData, setUserData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    setIsLoading(true)
+
     const fetchProfile = async () => {
       // Verifica se o usuário está autenticado
       if (!authService.isAuthenticated()) {
@@ -27,6 +31,7 @@ function Profile() {
 
       try {
         const profileData = await authService.getProfile();
+        await new Promise((resolve) => setTimeout(resolve, 600))
         setUserData(profileData);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
@@ -37,6 +42,8 @@ function Profile() {
           authService.logout();
           toast(error.response?.detail);
         }
+      } finally {
+        setIsLoading(false)
       }
     };
 
@@ -55,16 +62,35 @@ function Profile() {
         <Button className="w-60 h-12 bg-[#02274f] text-lg font-extrabold" onClick={onSubmit}>Logout</Button>
       </div>
       <Card className="w-full max-w-sm shadow-xl">
-        {userData && (
+        {isLoading && (
+          <>
+            <CardHeader className="flex flex-col items-center">
+              <Skeleton className="h-4 w-50 rounded-xl" />
+              <Skeleton className="h-18 w-18 rounded-xl" />
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-6">
+                <div className="grid gap-2">
+                  <Skeleton className="h-4 w-[100px]" />
+                  <Skeleton className="h-9 " />
+                </div>
+                <div className="grid gap-2">
+                  <Skeleton className="h-4 w-[120px]" />
+                  <Skeleton className="h-9 " />
+                </div>
+              </div>
+            </CardContent>
+          </>
+        )}
+
+        {!isLoading && userData && (
           <>
             <CardHeader className="flex flex-col items-center">
               <p className="text-xs">Profile picture</p>
-              <div>
-                <Avatar className="rounded-lg w-16 h-16">
-                  <AvatarImage src={userData.avatar.high} alt="Profile picture" />
-                  <AvatarFallback>ER</AvatarFallback>
-                </Avatar>
-              </div>
+              <Avatar className="rounded-lg w-16 h-16">
+                <AvatarImage src={userData.avatar.high} alt="Profile picture" />
+                <AvatarFallback>ER</AvatarFallback>
+              </Avatar>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col gap-6">
